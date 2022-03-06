@@ -3,25 +3,28 @@ const dateFormat = require('../utils/dateFormat');
 
 const UserSchema = new Schema(
   {
-    userName: {
+    username: {
       type: String,
+      unique: true,
       required: true,
       trim: true
     },
-    createdBy: {
+    email: {
       type: String,
+      unique: true,
       required: true,
-      trim: true
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      get: createdAtVal => dateFormat(createdAtVal)
+      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     thoughts: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Thought'
+      }
+    ],
+    friends: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
       }
     ]
   },
@@ -36,11 +39,8 @@ const UserSchema = new Schema(
 );
 
 // get total count of thoughts and replies on retrieval
-UserSchema.virtual('thoughtCount').get(function() {
-  return this.thoughts.reduce(
-    (total, thought) => total + thought.replies.length + 1,
-    0
-  );
+UserSchema.virtual('friendCount').get(function() {
+  return this.friends.length;
 });
 
 const User = model('User', UserSchema);
