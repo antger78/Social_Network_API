@@ -7,7 +7,7 @@ const {
 } = require('../../controllers/thought-controller');
 
 // /api/thoughts/<UserId>
-router.route('/:UserId').post(addThought);
+router.route('/:userId').post(addThought);
 
 // /api/thoughts/<userId>/<thoughtId>
 router
